@@ -12,6 +12,12 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+class ViewHolder {
+    TextView title;
+    TextView author;
+    ImageView myImageView;
+}
+
 public class BookAdapter extends ArrayAdapter<Book> {
 
     public BookAdapter(Activity context, ArrayList<Book> books) {
@@ -21,30 +27,43 @@ public class BookAdapter extends ArrayAdapter<Book> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        View listItemView = convertView;
-        if (listItemView == null) {
-            listItemView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.list_item, parent, false);
+        ViewHolder viewHolder;
+
+        if (convertView == null) {
+
+            // inflate the layout
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, parent, false);
+
+            // set up the ViewHolder
+            viewHolder = new ViewHolder();
+            viewHolder.title = (TextView) convertView.findViewById(R.id.book_title);
+            viewHolder.author = (TextView) convertView.findViewById(R.id.book_author);
+            viewHolder.myImageView = (ImageView) convertView.findViewById(R.id.book_cover);
+
+            // store the holder with the view.
+            convertView.setTag(viewHolder);
+
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
+        // object item based on the position
         Book currentBook = getItem(position);
 
-        TextView title = (TextView) listItemView.findViewById(R.id.book_title);
-        title.setText(currentBook.getTitle());
+        // assign values if the object is not null
+        if (currentBook != null) {
+            // get the views from the ViewHolder and then set the values
+            viewHolder.title.setText(currentBook.getTitle());
+            viewHolder.author.setText(currentBook.getAuthor());
+            Glide
+                    .with(getContext())
+                    .load(currentBook.getThumbnail())
+                    .centerCrop()
+                    .placeholder(android.R.drawable.alert_light_frame)
+                    .crossFade()
+                    .into(viewHolder.myImageView);
+        }
 
-        TextView author = (TextView) listItemView.findViewById(R.id.book_author);
-        author.setText(currentBook.getAuthor());
-
-        ImageView myImageView = (ImageView) listItemView.findViewById(R.id.book_cover);
-
-        Glide
-                .with(getContext())
-                .load(currentBook.getThumbnail())
-                .centerCrop()
-                .placeholder(android.R.drawable.alert_light_frame)
-                .crossFade()
-                .into(myImageView);
-
-        return listItemView;
+        return convertView;
     }
 }
