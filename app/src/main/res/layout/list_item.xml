@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight">
+
+    <ImageView
+        android:id="@+id/book_cover"
+        android:layout_width="64dp"
+        android:layout_height="match_parent"
+        tools:src="@drawable/books" />
+
+    <TextView
+        android:id="@+id/book_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/book_cover"
+        android:maxLines="1"
+        android:paddingLeft="8dp"
+        android:textSize="20sp"
+        tools:text="The Old Man And the Sea" />
+
+    <TextView
+        android:id="@+id/book_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/book_title"
+        android:layout_toRightOf="@id/book_cover"
+        android:maxLines="1"
+        android:paddingLeft="8dp"
+        android:textSize="16sp"
+        tools:text="Arthur Green" />
+
+</RelativeLayout>
