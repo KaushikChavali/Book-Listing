@@ -124,7 +124,7 @@ public final class QueryUtils {
      */
     private static List<Book> extractFeatureFromJson(String queryUrl) {
 
-        String author = null;
+        String author = null, thumbs = null;
 
         List<Book> books = new ArrayList<>();
 
@@ -159,10 +159,12 @@ public final class QueryUtils {
 
                     String link = infoObject.optString("infoLink").toString();
 
-                    JSONObject imageObject = infoObject.optJSONObject("imageLinks");
+                    if (infoObject.has("imageLinks")) {
 
-                    String thumbs = imageObject.optString("thumbnail").toString();
+                        JSONObject imageObject = infoObject.optJSONObject("imageLinks");
 
+                        thumbs = imageObject.optString("thumbnail").toString();
+                    }
 
                     Book book = new Book(title, author, thumbs, link);
 
