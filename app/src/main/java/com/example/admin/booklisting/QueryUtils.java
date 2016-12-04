@@ -36,6 +36,7 @@ public final class QueryUtils {
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
+            Log.i(LOG_TAG, jsonResponse);
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error closing input stream", e);
         }
@@ -123,6 +124,8 @@ public final class QueryUtils {
      */
     private static List<Book> extractFeatureFromJson(String queryUrl) {
 
+        String author = null;
+
         List<Book> books = new ArrayList<>();
 
         // If the JSON string is empty or null, then return early.
@@ -134,28 +137,37 @@ public final class QueryUtils {
 
             JSONObject jsonRootObject = new JSONObject(queryUrl);
 
-            JSONArray jsonArray = jsonRootObject.optJSONArray("items");
+            if (jsonRootObject.has("items")) {
 
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                JSONArray jsonArray = jsonRootObject.optJSONArray("items");
 
-                JSONObject infoObject = jsonObject.optJSONObject("volumeInfo");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                String title = infoObject.optString("title").toString();
+                    JSONObject infoObject = jsonObject.optJSONObject("volumeInfo");
 
-                JSONArray authorArray = infoObject.getJSONArray("authors");
+                    String title = infoObject.optString("title").toString();
 
-                String author = authorArray.optString(0).toString();
+                    if (infoObject.has("authors")) {
 
-                String link = infoObject.optString("infoLink").toString();
+                        JSONArray authorArray = infoObject.getJSONArray("authors");
 
-                JSONObject imageObject = infoObject.optJSONObject("imageLinks");
+                        author = authorArray.optString(0).toString();
+                    } else {
+                        author = " - ";
+                    }
 
-                String thumbs = imageObject.optString("thumbnail").toString();
+                    String link = infoObject.optString("infoLink").toString();
 
-                Book book = new Book(title, author, thumbs, link);
+                    JSONObject imageObject = infoObject.optJSONObject("imageLinks");
 
-                books.add(book);
+                    String thumbs = imageObject.optString("thumbnail").toString();
+
+
+                    Book book = new Book(title, author, thumbs, link);
+
+                    books.add(book);
+                }
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
